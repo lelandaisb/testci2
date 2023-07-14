@@ -28,7 +28,7 @@ jobs:
         run: |
           echo Project path is ${{ env.DEVOPS_DIR }}
           echo Release number is ${{ github.ref }}
-          cd $GITHUB_WORKSPACE/.github/workflows && python check-version.py ${{ env.DEVOPS_DIR }} ${{ github.ref }}
+          cd $GITHUB_WORKSPACE/.github/workflows && python check-version.py $GITHUB_WORKSPACE ${{ github.ref_name }}
 
       # Create a Github Release
       - name: Release
