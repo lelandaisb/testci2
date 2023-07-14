@@ -35,3 +35,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: "**coucou** les amis"
+        env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
