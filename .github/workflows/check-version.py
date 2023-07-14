@@ -2,6 +2,12 @@ import re
 import sys
 import os
 
+# If it exists a file 'source_path/cmake/version.cmake', 
+# check if the cmake version is equal to the expected argument.
+# Used in CI to check if release number and cmake version are identical.
+#
+# Return false if release number and cmake version are different
+# true otherwise (if equal or if file does not exist, not a cmake project).
 def checkVersion(source_path, expected):
     actual = getCmakeVersion(source_path)
     if (actual == ''):
