@@ -1,22 +1,28 @@
 import re
 import sys
+import os
 
 def checkVersion(source_path, expected):
     actual = getCmakeVersion(source_path)
-    print('Expected version', expected, ', actual', actual)
-    if (actual == expected):
-        return 0
+    if (actual == ''):
+        print('No file named cmake/version.cmake')
     else:
-        return -1
+        print('Expected version', expected, ', actual', actual)
+        if (actual != expected):
+            return -1
+    return 0
 
 def getCmakeVersion(project_path):
-    with open(project_path + '/cmake/version.cmake') as f:
-        line = ' '.join(f.readlines())
-        major = re.search("_MAJOR_VERSION \"([0-9]+)\"", line)
-        minor = re.search("_MINOR_VERSION \"([0-9]+)\"", line)
-        release = re.search("_RELEASE_VERSION \"([0-9]+)\"", line)
-        version = major.group(1) + "." + minor.group(1) + "." + release.group(1)
-        return version
+    path = project_path + '/cmake/version.cmake'
+    version = ''
+    if (os.path.exists(path)):
+        with open(path) as f:
+            line = ' '.join(f.readlines())
+            major = re.search("_MAJOR_VERSION \"([0-9]+)\"", line)
+            minor = re.search("_MINOR_VERSION \"([0-9]+)\"", line)
+            release = re.search("_RELEASE_VERSION \"([0-9]+)\"", line)
+            version = major.group(1) + "." + minor.group(1) + "." + release.group(1)
+    return version
 
 
 if __name__ == "__main__":
