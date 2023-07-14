@@ -34,7 +34,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            ./releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-*.zip
-            ./releng/fr.cea.nabla.updatesite/target/products/*.zip
-            ./plugins/fr.cea.nabla.vscode.extension/*.vsix
+          body: "coucou"
