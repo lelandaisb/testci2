@@ -26,8 +26,8 @@ jobs:
       - name: Check cmake and release versions
         shell: bash
         run: |
-          echo Project path is ${{ env.DEVOPS_DIR }}
-          echo Release number is ${{ github.ref }}
+          echo Project path: $GITHUB_WORKSPACE
+          echo Release number: ${{ github.ref_name }}
           cd $GITHUB_WORKSPACE/.github/workflows && python check-version.py $GITHUB_WORKSPACE ${{ github.ref_name }}
 
       # Create a Github Release
