@@ -1,0 +1,40 @@
+name: Test CI
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  main:
+    name: Main job
+    # The CMake configure and build commands are platform agnostic and should work equally
+    # well on Linux, Windows or Mac.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      # checkout sources to get python file
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2 # seems to be needed by codecov
+          submodules: recursive
+
+      # Check tag name is same as cmake eversion
+      - name: Check cmake and release versions
+        shell: bash
+        run: |
+          echo Project path is ${{ env.DEVOPS_DIR }}
+          echo Release number is ${{ github.ref }}
+          cd $GITHUB_WORKSPACE/.github/workflows && python check-version.py ${{ env.DEVOPS_DIR }} ${{ github.ref }}
+
+      # Create a Github Release
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-*.zip
+            ./releng/fr.cea.nabla.updatesite/target/products/*.zip
+            ./plugins/fr.cea.nabla.vscode.extension/*.vsix
