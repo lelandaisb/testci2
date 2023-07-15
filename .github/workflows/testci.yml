@@ -6,36 +6,16 @@ on:
       - '*'
 
 jobs:
-  main:
-    name: Main job
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Linux, Windows or Mac.
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
+  call:
+    name: Call check version CI
+    uses: LIHPC-Computational-Geometry/lihpccg-ci/.github/workflows/check-version-reusable.yml@main
 
-    steps:
-      # checkout sources to get python file
-      - name: Checkout sources
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2 # seems to be needed by codecov
-          submodules: recursive
-
-      # Check tag name is same as cmake eversion
-      - name: Check cmake and release versions
-        shell: bash
-        run: |
-          echo Project path: $GITHUB_WORKSPACE
-          echo Release number: ${{ github.ref_name }}
-          cd $GITHUB_WORKSPACE/.github/workflows && python check-version.py $GITHUB_WORKSPACE ${{ github.ref_name }}
-
-      # Create a Github Release
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body: "**coucou** les amis"
-        env:
-          USERNAME: ${{ github.actor }}
-          PASSWORD: ${{ github.token }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# Create a Github Release
+#      - name: Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          body: "**coucou** les amis"
+#        env:
+#          USERNAME: ${{ github.actor }}
+#          PASSWORD: ${{ github.token }}
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
