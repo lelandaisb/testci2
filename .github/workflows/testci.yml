@@ -2,8 +2,8 @@ name: Test CI
 
 on:
   push:
-    tags:
-      - '*'
+#    tags:
+#      - '*'
 
 jobs:
   main:
