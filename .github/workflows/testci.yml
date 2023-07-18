@@ -6,7 +6,27 @@ on:
       - '*'
 
 jobs:
-  call:
-    name: Call check version CI
-    uses: LIHPC-Computational-Geometry/lihpccg-ci/.github/workflows/make-release-reusable.yml@main
+  main:
+    name: Main job
+    runs-on: ubuntu-latest
 
+    steps:
+      # Checkout source files used by the Python checker
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      # Release tag name == cmake eversion ?
+      - name: Test
+        shell: bash
+        run: |
+          echo Project path: $GITHUB_WORKSPACE
+          echo Project name: ${{ github.event.repository.name }}
+          echo Repo: ${{ github.repository }}
+          git clone --depth=1 ${{ github.server_url }}/spack_recipes_meshing.git
+          #RECIPE=$GITHUB_WORKSPACE/spack_recipes_meshing/meshing/packages/${{ github.event.repository.name }}/package.py
+          RECIPE=$GITHUB_WORKSPACE/package.py
+          #curl -sL "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz" | shasum -a 256 | cut -d " " -f 1
+          SHA=curl -sL "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/6.5.6.tar.gz" | shasum -a 256 | cut -d " " -f 1
+          python modify-spack-recipe.py $RECIPE 6.5.6 SHA
+
+      
