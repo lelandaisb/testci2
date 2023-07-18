@@ -26,7 +26,7 @@ jobs:
           #RECIPE=$GITHUB_WORKSPACE/spack_recipes_meshing/meshing/packages/${{ github.event.repository.name }}/package.py
           RECIPE=$GITHUB_WORKSPACE/package.py
           #curl -sL "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz" | shasum -a 256 | cut -d " " -f 1
-          SHA=curl -sL "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/6.5.6.tar.gz" | shasum -a 256 | cut -d " " -f 1
+          SHA=`curl -sL "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/6.5.6.tar.gz" | shasum -a 256 | cut -d " " -f 1`
           python modify-spack-recipe.py $RECIPE 6.5.6 SHA
 
       
