@@ -11,22 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout source files used by the Python checker
-      - name: Checkout sources
-        uses: actions/checkout@v3
-
-      # Release tag name == cmake eversion ?
       - name: Test
         shell: bash
         run: |
-          echo Project path: $GITHUB_WORKSPACE
-          echo Project name: ${{ github.event.repository.name }}
-          echo Repo: ${{ github.repository }}
-          git clone --depth=1 https://github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
-          #RECIPE=$GITHUB_WORKSPACE/spack_recipes_meshing/meshing/packages/${{ github.event.repository.name }}/package.py
-          RECIPE=$GITHUB_WORKSPACE/package.py
-          #curl -sL "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz" | shasum -a 256 | cut -d " " -f 1
-          SHA=`curl -sL "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/6.5.6.tar.gz" | shasum -a 256 | cut -d " " -f 1`
-          cd $GITHUB_WORKSPACE/.github/workflows && python modify-spack-recipe.py $RECIPE 6.5.6 SHA
+          git clone --depth=1 https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
+          MESHING_RECIPES=$GITHUB_WORKSPACE/spack_recipes_meshing
 
+          echo Spack recipe: $RECIPE_PATH
+          echo Project name: ${{ github.event.repository.name }}
+          echo Project version: ${{ github.ref_name }}
+          touch $RECIPE_PATH
+          echo Add file $RECIPE_RELATIVE_PATH
+          git -C $MESHING_RECIPES add $RECIPE_RELATIVE_PATH
+          echo Commit and push for ${{ github.actor }}
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git -C $MESHING_RECIPES commit -m "Update recipe with new version"
+          git -C $MESHING_RECIPES push
+
+        env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
