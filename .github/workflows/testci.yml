@@ -11,12 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout source files used by the Python checker
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
       - name: Test
         shell: bash
         run: |
-          git clone --depth=1 https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
-          MESHING_RECIPES=$GITHUB_WORKSPACE/spack_recipes_meshing
-          RECIPE_RELATIVE_PATH=meshing/packages/mgx/test.bidon
+          #git clone --depth=1 https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
+          #MESHING_RECIPES=$GITHUB_WORKSPACE/spack_recipes_meshing
+          #RECIPE_RELATIVE_PATH=meshing/packages/mgx/test.bidon
+          MESHING_RECIPES=$GITHUB_WORKSPACE
+          #RECIPE_RELATIVE_PATH=test.bidon
           RECIPE_PATH=$MESHING_RECIPES/$RECIPE_RELATIVE_PATH
           echo Spack recipe: $RECIPE_PATH
           echo Project name: ${{ github.event.repository.name }}
