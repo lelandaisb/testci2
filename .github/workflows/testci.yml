@@ -22,7 +22,7 @@ jobs:
           #MESHING_RECIPES=$GITHUB_WORKSPACE/spack_recipes_meshing
           #RECIPE_RELATIVE_PATH=meshing/packages/mgx/test.bidon
           MESHING_RECIPES=$GITHUB_WORKSPACE
-          #RECIPE_RELATIVE_PATH=test.bidon
+          RECIPE_RELATIVE_PATH=test.bidon
           RECIPE_PATH=$MESHING_RECIPES/$RECIPE_RELATIVE_PATH
           echo Spack recipe: $RECIPE_PATH
           echo Project name: ${{ github.event.repository.name }}
