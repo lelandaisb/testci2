@@ -16,7 +16,7 @@ jobs:
         run: |
           git clone --depth=1 https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
           MESHING_RECIPES=$GITHUB_WORKSPACE/spack_recipes_meshing
-          RECIPE_RELATIVE_PATH=meshing/packages/mgx/package.py
+          RECIPE_RELATIVE_PATH=meshing/packages/mgx/test.bidon
           RECIPE_PATH=$MESHING_RECIPES/$RECIPE_RELATIVE_PATH
           echo Spack recipe: $RECIPE_PATH
           echo Project name: ${{ github.event.repository.name }}
