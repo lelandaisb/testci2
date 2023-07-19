@@ -1,0 +1,60 @@
+name: Reusable make release CI
+
+on:
+  workflow_call:
+
+jobs:
+  main:
+    name: Main job
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout source files used by the Python checker
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      # Release tag name == cmake eversion ?
+      - name: Check cmake and release versions
+        shell: bash
+        run: |
+          echo Project path: $GITHUB_WORKSPACE
+          echo Release number: ${{ github.ref_name }}
+          git clone --depth=1 https://github.com/LIHPC-Computational-Geometry/lihpccg-ci.git
+          cd $GITHUB_WORKSPACE/lihpccg-ci/.github/workflows && python check-version.py $GITHUB_WORKSPACE ${{ github.ref_name }}
+
+      # Create a Github Release
+      - name: Create a release
+        uses: softprops/action-gh-release@v1
+        env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Modify Spack recipe with new version
+      - name: Modify Spack recipe with new version
+        shell: bash
+        run: |
+          git clone --depth=1 https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
+          MESHING_RECIPES=$GITHUB_WORKSPACE/spack_recipes_meshing
+
+          # *** to be removed gmds072 will be removed ***
+          if [[ ${{ github.event.repository.name }} == "gmds072" ]]; then PRJ="gmds"; else PRJ=${{ github.event.repository.name }}; fi
+          RECIPE_RELATIVE_PATH=meshing/packages/$PRJ/package.py
+          RECIPE_PATH=$MESHING_RECIPES/$RECIPE_RELATIVE_PATH
+
+          echo Spack recipe: $RECIPE_PATH
+          echo Project name: ${{ github.event.repository.name }}
+          echo Project version: ${{ github.ref_name }}
+          cd $GITHUB_WORKSPACE/lihpccg-ci/.github/workflows && python modify-spack-recipe.py $RECIPE_PATH ${{ github.event.repository.name }} ${{ github.ref_name }}
+          echo Add file $RECIPE_RELATIVE_PATH
+          git -C $MESHING_RECIPES add $RECIPE_RELATIVE_PATH
+          echo Commit and push for ${{ github.actor }}
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git -C $MESHING_RECIPES commit -m "Update recipe with new version"
+          git -C $MESHING_RECIPES push
+
+        env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
